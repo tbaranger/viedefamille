@@ -1,3 +1,9 @@
-<!doctype html>
-<title>Vie de famille | Journal</title>
-<h1>Journal de bord</h1>
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Journal de bord{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <p>Bienvenue sur le journal de bord de la famille !</p>
+{% endblock %}
