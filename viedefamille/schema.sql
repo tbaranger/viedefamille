@@ -7,7 +7,8 @@ DROP TABLE IF EXISTS entry_durations;
 
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  username TEXT UNIQUE NOT NULL
+  username TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL
 );
 
 CREATE TABLE family_member (
