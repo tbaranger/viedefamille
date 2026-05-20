@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Entries{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('journal.create') }}">New</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% for log_entry in log_entries %}
+    <article class="log_entry">
+      <header>
+        <div>
+          <h1>{{ log_entry['entry_type'] }}</h1>
+          <div class="about">by {{ log_entry['username'] }} on {{ log_entry['created'].strftime('%Y-%m-%d') }}</div>
+        </div>
+        {% if g.user['id'] == log_entry['author_id'] %}
+          <a class="action" href="{{ url_for('journal.update', id=log_entry['id']) }}">Edit</a>
+        {% endif %}
+      </header>
+      <p class="body">{{ log_entry['comments'] }}</p>
+    </article>
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+  {% endfor %}
+{% endblock %}
