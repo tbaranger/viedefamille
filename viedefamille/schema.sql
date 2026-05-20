@@ -30,9 +30,10 @@ CREATE TABLE log_entry (
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   family_member_id INTEGER,
   entry_type TEXT NOT NULL,
+  amount INTEGER,
   entry_start TIMESTAMP NOT NULL,
   entry_end TIMESTAMP,
-  details TEXT NOT NULL,
+  comments TEXT NOT NULL,
   FOREIGN KEY (author_id) REFERENCES user (id),
   FOREIGN KEY (family_member_id) REFERENCES family_member (id)
 );
