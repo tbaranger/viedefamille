@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h2>{% block title %}Événements du jour{% endblock %}</h2>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('journal.create') }}">Ajouter</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% for log_entry in log_entries %}
+    <article class="log_entry">
+      <header>
+        <div>
+          <p class="log_entry"><b>{{ log_entry['entry_type'] }}</b>
+          {% if log_entry['amount'] %}
+            {{ log_entry['amount'] }}
+              {% if log_entry['entry_type'] == "Biberon" %}
+                mL
+              {% else %}
+                g
+              {% endif %}
+          {% endif %}
+          </p>
+          {% if log_entry['comments'] != "" %}
+            <p class="comments">
+              "{{ log_entry['comments'] }}"
+            </p>
+          {% endif %}
+          <div class="about">
+            Ajouté par <b>{{ log_entry['username'] }}</b>
+            le {{ log_entry['created'].strftime('%d-%m-%Y') }}
+            à {{ log_entry['created'].strftime('%H:%M') }}.
+          </div>
+        </div>
+        {% if g.user['id'] == log_entry['author_id'] %}
+          <a class="action" href="{{ url_for('journal.update', id=log_entry['id']) }}">Modifier</a>
+        {% endif %}
+      </header>
+    </article>
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+  {% endfor %}
+{% endblock %}

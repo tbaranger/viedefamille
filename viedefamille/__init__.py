@@ -29,12 +29,9 @@ def create_app(test_config=None):
 
     app.register_blueprint(auth.bp)
 
-    @app.route("/")
-    def index():
-        return redirect("/journal")
+    from . import journal
 
-    @app.route("/journal")
-    def journal():
-        return render_template("journal.html")
+    app.register_blueprint(journal.bp)
+    app.add_url_rule("/", endpoint="index")
 
     return app

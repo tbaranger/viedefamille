@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h2>{% block title %}Nouvelle Entrée{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="entry_type">Type d'évènement</label>
+    <input name="entry_type" id="entry_type" value="{{ request.form['entry_type'] }}" required>
+    <label for="family_member_id">Membre de la famille</label>
+    <input name="family_member_id" id="family_member_id" value="{{ request.form['family_member_id'] }}">
+    <label for="amount">Quantité</label>
+    <input name="amount" id="amount" value="{{ request.form['amount'] }}">
+    <label for="comments">Commentaires</label>
+    <textarea name="comments" id="comments">{{ request.form['comments'] }}</textarea>
+    <input type="submit" value="Enregistrer">
+  </form>
+{% endblock %}
