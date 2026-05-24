@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Entries{% endblock %}</h1>
+  <h2>{% block title %}Événements du jour{% endblock %}</h2>
   {% if g.user %}
-    <a class="action" href="{{ url_for('journal.create') }}">New</a>
+    <a class="action" href="{{ url_for('journal.create') }}">Ajouter</a>
   {% endif %}
 {% endblock %}
 
@@ -12,14 +12,31 @@
     <article class="log_entry">
       <header>
         <div>
-          <h1>{{ log_entry['entry_type'] }}</h1>
-          <div class="about">by {{ log_entry['username'] }} on {{ log_entry['created'].strftime('%Y-%m-%d') }}</div>
+          <p class="log_entry"><b>{{ log_entry['entry_type'] }}</b>
+          {% if log_entry['amount'] %}
+            {{ log_entry['amount'] }}
+              {% if log_entry['entry_type'] == "Biberon" %}
+                mL
+              {% else %}
+                g
+              {% endif %}
+          {% endif %}
+          </p>
+          {% if log_entry['comments'] != "" %}
+            <p class="comments">
+              "{{ log_entry['comments'] }}"
+            </p>
+          {% endif %}
+          <div class="about">
+            Ajouté par <b>{{ log_entry['username'] }}</b>
+            le {{ log_entry['created'].strftime('%d-%m-%Y') }}
+            à {{ log_entry['created'].strftime('%H:%M') }}.
+          </div>
         </div>
         {% if g.user['id'] == log_entry['author_id'] %}
-          <a class="action" href="{{ url_for('journal.update', id=log_entry['id']) }}">Edit</a>
+          <a class="action" href="{{ url_for('journal.update', id=log_entry['id']) }}">Modifier</a>
         {% endif %}
       </header>
-      <p class="body">{{ log_entry['comments'] }}</p>
     </article>
     {% if not loop.last %}
       <hr>

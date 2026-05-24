@@ -2,8 +2,6 @@ DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS family_member;
 DROP TABLE IF EXISTS family_member_user;
 DROP TABLE IF EXISTS log_entry;
-DROP TABLE IF EXISTS entry_types;
-DROP TABLE IF EXISTS entry_durations;
 
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,9 +29,7 @@ CREATE TABLE log_entry (
   family_member_id INTEGER,
   entry_type TEXT NOT NULL,
   amount INTEGER,
-  entry_start TIMESTAMP NOT NULL,
-  entry_end TIMESTAMP,
-  comments TEXT NOT NULL,
+  comments TEXT,
   FOREIGN KEY (author_id) REFERENCES user (id),
   FOREIGN KEY (family_member_id) REFERENCES family_member (id)
 );
