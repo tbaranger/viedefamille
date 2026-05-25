@@ -6,7 +6,7 @@
 
 {% block content %}
 
-  <form method="post">
+  <form class="log_entry_creation" method="post">
     <label for="entry_type">Type d'évènement</label>
     <select name="entry_type_id" id="entry_type_id" required>
       {% for entry_type in entry_types %}

@@ -30,8 +30,4 @@
     <textarea name="comments" id="comments">{{ request.form['comments'] or log_entry['comments'] }}</textarea>
     <input type="submit" value="Enregistrer">
   </form>
-  <hr>
-  <form action="{{ url_for('journal.delete', id=log_entry['id']) }}" method="post">
-    <input class="danger" type="submit" value="Supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet évènement?');">
-  </form>
 {% endblock %}

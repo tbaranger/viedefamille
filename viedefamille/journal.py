@@ -22,7 +22,9 @@ def index():
     # Get entry types
     entry_types = db.execute("SELECT * FROM entry_type").fetchall()
 
-    return render_template("journal/index.html", log_entries=log_entries, entry_types=entry_types)
+    return render_template(
+        "journal/index.html", log_entries=log_entries, entry_types=entry_types
+    )
 
 
 @bp.route("/create", methods=("GET", "POST"))
@@ -125,7 +127,9 @@ def update(id):
 
     db = get_db()
     entry_types = db.execute("SELECT * FROM entry_type").fetchall()
-    return render_template("journal/update.html", log_entry=log_entry, entry_types=entry_types)
+    return render_template(
+        "journal/update.html", log_entry=log_entry, entry_types=entry_types
+    )
 
 
 @bp.route("/<int:id>/delete", methods=("POST",))

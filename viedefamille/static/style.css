@@ -19,10 +19,13 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
 .log_entry > header h1 { font-size: 1.5em; margin-bottom: 0; }
 .log_entry .about { color: slategray; font-style: italic; }
 .log_entry .comments { margin: 0.5em 0; }
+.log_entry .details { margin: 0em; display: flex; flex-direction: column; }
+.log_entry form { margin: 0; }
 .content:last-child { margin-bottom: 0; }
-.content form { margin: 1em 0; display: flex; flex-direction: column; }
+.content form.log_entry_creation { margin: 1em 0; display: flex; flex-direction: column; }
 .content label { font-weight: bold; margin-bottom: 0.5em; }
 .content input, .content select, .content textarea { margin-bottom: 1em; }
 .content textarea { min-height: 12em; resize: vertical; }
+div.actions { display: flex; gap: 0.5rem; }
 input.danger { color: #cc2f2e; }
-input[type=submit] { align-self: start; min-width: 10em; }
+input[type=submit] { align-self: start; padding: 0.1rem 0.1rem; min-width: 7.5em; }
