@@ -9,16 +9,15 @@
 
 {% block content %}
   {% for log_entry in log_entries %}
+  {% set entry_type = entry_types[log_entry['entry_type_id'] - 1] %}  
     <article class="log_entry">
       <header>
         <div>
-          <p class="log_entry"><b>{{ log_entry['entry_type'] }}</b>
+          <p class="log_entry"><b>{{ entry_type.name }}</b>
           {% if log_entry['amount'] %}
             {{ log_entry['amount'] }}
-              {% if log_entry['entry_type'] == "Biberon" %}
-                mL
-              {% else %}
-                g
+              {% if entry_type.unit %}
+                {{ entry_type.unit }}
               {% endif %}
           {% endif %}
           </p>

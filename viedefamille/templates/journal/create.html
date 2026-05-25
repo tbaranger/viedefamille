@@ -5,9 +5,14 @@
 {% endblock %}
 
 {% block content %}
+
   <form method="post">
     <label for="entry_type">Type d'évènement</label>
-    <input name="entry_type" id="entry_type" value="{{ request.form['entry_type'] }}" required>
+    <select name="entry_type_id" id="entry_type_id" required>
+      {% for entry_type in entry_types %}
+        <option value="{{ entry_type.id }}" {% if request.form['entry_type_id'] == entry_type.id %}selected{% endif %}>{{ entry_type.name }}</option>
+      {% endfor %}
+    </select>
     <label for="family_member_id">Membre de la famille</label>
     <input name="family_member_id" id="family_member_id" value="{{ request.form['family_member_id'] }}">
     <label for="amount">Quantité</label>
