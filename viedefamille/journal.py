@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Blueprint, flash, g, redirect, render_template, request, url_for
 from werkzeug.exceptions import abort
 
@@ -16,7 +17,7 @@ def index():
         "SELECT *"
         " FROM log_entry e JOIN user u ON e.author_id = u.id"
         " WHERE DATE(e.created) = DATE('now')"
-        " ORDER BY created ASC"
+        " ORDER BY event_time ASC"
     ).fetchall()
 
     # Get entry types
@@ -33,10 +34,14 @@ def create():
     if request.method == "POST":
         author_id = g.user["id"]
         entry_type_id = request.form["entry_type_id"]
+        event_time = request.form["event_time"]
         family_member_id = request.form["family_member_id"]
         amount = request.form["amount"]
         comments = request.form["comments"]
         error = None
+
+        # Convert event_time to a datetime object for storage in the database
+        entry_datetime = datetime.strptime(event_time, "%H:%M")
 
         if not entry_type_id:
             error = "Entry type is required."
@@ -53,12 +58,13 @@ def create():
             db = get_db()
             db.execute(
                 "INSERT INTO log_entry "
-                "(author_id, entry_type_id, created, "
+                "(author_id, entry_type_id, event_time, created, "
                 "family_member_id, amount, comments)"
-                "VALUES (?, ?, ?, ?, ?, ?)",
+                "VALUES (?, ?, ?, ?, ?, ?, ?)",
                 (
                     author_id,
                     entry_type_id,
+                    entry_datetime,
                     created,
                     family_member_id,
                     amount,
@@ -79,7 +85,7 @@ def get_log_entry(id, check_author=True):
     log_entry = (
         get_db()
         .execute(
-            "SELECT e.id, u.username, e.entry_type_id, e.family_member_id, e.amount, e.comments, e.author_id"
+            "SELECT e.id, u.username, e.entry_type_id, e.event_time,e.family_member_id, e.amount, e.comments, e.author_id"
             " FROM log_entry e JOIN user u ON e.author_id = u.id"
             " WHERE e.id = ?",
             (id,),
@@ -103,10 +109,14 @@ def update(id):
 
     if request.method == "POST":
         entry_type_id = request.form["entry_type_id"]
+        event_time = request.form["event_time"]
         family_member_id = request.form["family_member_id"]
         amount = request.form["amount"]
         comments = request.form["comments"]
         error = None
+
+        # Convert event_time to a datetime object for storage in the database
+        entry_datetime = datetime.strptime(event_time, "%H:%M")
 
         if not entry_type_id:
             error = "Entry type is required."
@@ -116,10 +126,11 @@ def update(id):
         else:
             db = get_db()
             db.execute(
-                "UPDATE log_entry SET entry_type_id = ?, family_member_id = ?, amount = ?, comments = ?"
+                "UPDATE log_entry SET entry_type_id = ?, event_time = ?, family_member_id = ?, amount = ?, comments = ?"
                 " WHERE id = ?",
                 (
                     entry_type_id,
+                    entry_datetime,
                     family_member_id,
                     amount,
                     comments,

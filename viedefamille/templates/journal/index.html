@@ -13,7 +13,7 @@
     <article class="log_entry">
       <header>
         <div class="details">
-          <p class="log_entry"><b>{{ entry_type.name }}</b>
+          <p class="log_entry"><b>{{ log_entry['event_time'].strftime('%H:%M') }} - {{ entry_type.name }}</b>
           {% if log_entry['amount'] %}
             {{ log_entry['amount'] }}
               {% if entry_type.unit %}

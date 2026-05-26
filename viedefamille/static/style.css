@@ -22,7 +22,7 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
 .log_entry > header { display: flex; align-items: flex-end; font-size: 0.85em; }
 .log_entry > header > div:first-of-type { flex: auto; }
 .log_entry > header h1 { font-size: 1.5em; margin-bottom: 0; }
-.log_entry .about { color: slategray; font-style: italic; }
+.log_entry .about { margin 0; font-size: 0.85em; color: slategray; font-style: italic; }
 .log_entry .comments { margin: 0.5em 0; }
 .log_entry .details { margin: 0em; display: flex; flex-direction: column; }
 .log_entry form { margin: 0; }

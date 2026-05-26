@@ -12,14 +12,16 @@
     <select name="entry_type_id" id="entry_type_id" required>
       {% for entry_type in entry_types %}
         <option value="{{ entry_type.id }}"
-        {% if request.method == "POST" and request.form['entry_type_id'] == entry_type.id %}
+        {% if request.method == "GET" and log_entry['entry_type_id'] == entry_type.id %}
           selected
-        {% elif request.method == "GET" and log_entry['entry_type_id'] == entry_type.id %}
+        {% elif request.method == "POST" and request.form['entry_type_id'] == entry_type.id %}
           selected
         {% endif %}>
         {{ entry_type.name }}</option>
       {% endfor %}
     </select>
+    <label for="event_time">Heure de l'évènement</label>
+    <input type="time" name="event_time" id="event_time" value="{{ request.form['event_time'] or log_entry['event_time'].strftime('%H:%M') }}" required>
     <label for="family_member_id">Membre de la famille</label>
     <input name="family_member_id" id="family_member_id"
       value="{{ request.form['family_member_id'] or log_entry['family_member_id'] }}">

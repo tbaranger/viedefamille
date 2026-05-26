@@ -13,6 +13,8 @@
         <option value="{{ entry_type.id }}" {% if request.form['entry_type_id'] == entry_type.id %}selected{% endif %}>{{ entry_type.name }}</option>
       {% endfor %}
     </select>
+    <label for="event_time">Heure de l'évènement</label>
+    <input type="time" name="event_time" id="event_time" value="{{ request.form['event_time'] }}" required>
     <label for="family_member_id">Membre de la famille</label>
     <input name="family_member_id" id="family_member_id" value="{{ request.form['family_member_id'] }}">
     <label for="amount">Quantité</label>
