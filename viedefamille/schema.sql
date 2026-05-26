@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS family_member;
-DROP TABLE IF EXISTS user_family_members;
+DROP TABLE IF EXISTS user_family_member;
 DROP TABLE IF EXISTS entry_type;
 DROP TABLE IF EXISTS log_entry;
 
@@ -15,7 +15,7 @@ CREATE TABLE family_member (
   name TEXT NOT NULL
 );
 
-CREATE TABLE user_family_members (
+CREATE TABLE user_family_member (
   user_id INTEGER NOT NULL,
   family_member_id INTEGER NOT NULL,
   PRIMARY KEY (user_id, family_member_id),
