@@ -1,6 +1,8 @@
 import os
 
-from flask import Flask, redirect, render_template
+from flask import Flask
+
+from . import db, auth, journal
 
 
 def create_app(test_config=None):
@@ -21,16 +23,8 @@ def create_app(test_config=None):
     # ensure the instance folder exists
     os.makedirs(app.instance_path, exist_ok=True)
 
-    from . import db
-
     db.init_app(app)
-
-    from . import auth
-
     app.register_blueprint(auth.bp)
-
-    from . import journal
-
     app.register_blueprint(journal.bp)
     app.add_url_rule("/", endpoint="index")
 
