@@ -5,7 +5,7 @@ VALUES
 
 INSERT INTO entry_type (name, unit)
 VALUES
-  ('Food', 'g');
+  ('Food', 'g'),
   ('Dog walk', NULL);
 
 INSERT INTO log_entry (author_id, event_time, family_member_id, entry_type_id, amount, comments)
