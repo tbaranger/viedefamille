@@ -85,7 +85,7 @@ def get_log_entry(id, check_author=True):
     log_entry = (
         get_db()
         .execute(
-            "SELECT e.id, u.username, e.entry_type_id, e.event_time,e.family_member_id, e.amount, e.comments, e.author_id"
+            "SELECT e.id, u.username, e.entry_type_id, e.event_time, e.family_member_id, e.amount, e.comments, e.author_id"
             " FROM log_entry e JOIN user u ON e.author_id = u.id"
             " WHERE e.id = ?",
             (id,),
