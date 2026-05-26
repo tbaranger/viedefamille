@@ -44,7 +44,11 @@ def create():
         if error is not None:
             flash(error)
         else:
-            created = get_db().execute("SELECT CURRENT_TIMESTAMP").fetchone()[0]
+            created = (
+                get_db()
+                .execute("SELECT DATETIME(CURRENT_TIMESTAMP, 'localtime')")
+                .fetchone()[0]
+            )
 
             db = get_db()
             db.execute(
