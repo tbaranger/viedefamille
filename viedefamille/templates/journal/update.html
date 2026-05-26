@@ -1,14 +1,27 @@
 {% extends 'base.html' %}
 
+{% set logged_entry_type = entry_types[log_entry['entry_type_id'] - 1] %}
+
 {% block header %}
-  <h2>{% block title %}Modifier "{{ log_entry['entry_type'] }}"{% endblock %}</h2>
+  <h2>{% block title %}Modifier "{{ logged_entry_type.name }}"{% endblock %}</h2>
 {% endblock %}
 
 {% block content %}
   <form method="post">
     <label for="entry_type">Type d'évènement</label>
-    <input name="entry_type" id="entry_type"
-      value="{{ request.form['entry_type'] or log_entry['entry_type'] }}" required>
+    <select name="entry_type_id" id="entry_type_id" required>
+      {% for entry_type in entry_types %}
+        <option value="{{ entry_type.id }}"
+        {% if request.method == "GET" and log_entry['entry_type_id'] == entry_type.id %}
+          selected
+        {% elif request.method == "POST" and request.form['entry_type_id'] == entry_type.id %}
+          selected
+        {% endif %}>
+        {{ entry_type.name }}</option>
+      {% endfor %}
+    </select>
+    <label for="event_time">Heure de l'évènement</label>
+    <input type="time" name="event_time" id="event_time" value="{{ request.form['event_time'] or log_entry['event_time'].strftime('%H:%M') }}" required>
     <label for="family_member_id">Membre de la famille</label>
     <input name="family_member_id" id="family_member_id"
       value="{{ request.form['family_member_id'] or log_entry['family_member_id'] }}">
@@ -18,9 +31,5 @@
     <label for="comments">Commentaires</label>
     <textarea name="comments" id="comments">{{ request.form['comments'] or log_entry['comments'] }}</textarea>
     <input type="submit" value="Enregistrer">
-  </form>
-  <hr>
-  <form action="{{ url_for('journal.delete', id=log_entry['id']) }}" method="post">
-    <input class="danger" type="submit" value="Supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet entry?');">
   </form>
 {% endblock %}

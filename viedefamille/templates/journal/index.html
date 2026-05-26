@@ -9,16 +9,15 @@
 
 {% block content %}
   {% for log_entry in log_entries %}
+  {% set entry_type = entry_types[log_entry['entry_type_id'] - 1] %}  
     <article class="log_entry">
       <header>
-        <div>
-          <p class="log_entry"><b>{{ log_entry['entry_type'] }}</b>
+        <div class="details">
+          <p class="log_entry"><b>{{ log_entry['event_time'].strftime('%H:%M') }} - {{ entry_type.name }}</b>
           {% if log_entry['amount'] %}
             {{ log_entry['amount'] }}
-              {% if log_entry['entry_type'] == "Biberon" %}
-                mL
-              {% else %}
-                g
+              {% if entry_type.unit %}
+                {{ entry_type.unit }}
               {% endif %}
           {% endif %}
           </p>
@@ -34,7 +33,14 @@
           </div>
         </div>
         {% if g.user['id'] == log_entry['author_id'] %}
-          <a class="action" href="{{ url_for('journal.update', id=log_entry['id']) }}">Modifier</a>
+        <div class="actions">
+          <form action="{{ url_for('journal.update', id=log_entry['id']) }}" method="get">
+            <input class="action" type="submit" value="Modifier">
+          </form>
+          <form action="{{ url_for('journal.delete', id=log_entry['id']) }}" method="post">
+            <input class="danger" type="submit" value="Supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet évènement?');">
+          </form>
+        </div>
         {% endif %}
       </header>
     </article>

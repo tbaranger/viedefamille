@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Blueprint, flash, g, redirect, render_template, request, url_for
 from werkzeug.exceptions import abort
 
@@ -10,12 +11,21 @@ bp = Blueprint("journal", __name__)
 @bp.route("/")
 def index():
     db = get_db()
+
+    # Get entries of the day
     log_entries = db.execute(
         "SELECT *"
         " FROM log_entry e JOIN user u ON e.author_id = u.id"
-        " ORDER BY created DESC"
+        " WHERE DATE(e.created) = DATE('now')"
+        " ORDER BY event_time ASC"
     ).fetchall()
-    return render_template("journal/index.html", log_entries=log_entries)
+
+    # Get entry types
+    entry_types = db.execute("SELECT * FROM entry_type").fetchall()
+
+    return render_template(
+        "journal/index.html", log_entries=log_entries, entry_types=entry_types
+    )
 
 
 @bp.route("/create", methods=("GET", "POST"))
@@ -23,29 +33,38 @@ def index():
 def create():
     if request.method == "POST":
         author_id = g.user["id"]
-        entry_type = request.form["entry_type"]
+        entry_type_id = request.form["entry_type_id"]
+        event_time = request.form["event_time"]
         family_member_id = request.form["family_member_id"]
         amount = request.form["amount"]
         comments = request.form["comments"]
         error = None
 
-        if not entry_type:
+        # Convert event_time to a datetime object for storage in the database
+        entry_datetime = datetime.strptime(event_time, "%H:%M")
+
+        if not entry_type_id:
             error = "Entry type is required."
 
         if error is not None:
             flash(error)
         else:
-            created = get_db().execute("SELECT CURRENT_TIMESTAMP").fetchone()[0]
+            created = (
+                get_db()
+                .execute("SELECT DATETIME(CURRENT_TIMESTAMP, 'localtime')")
+                .fetchone()[0]
+            )
 
             db = get_db()
             db.execute(
                 "INSERT INTO log_entry "
-                "(author_id, entry_type, created, "
+                "(author_id, entry_type_id, event_time, created, "
                 "family_member_id, amount, comments)"
-                "VALUES (?, ?, ?, ?, ?, ?)",
+                "VALUES (?, ?, ?, ?, ?, ?, ?)",
                 (
                     author_id,
-                    entry_type,
+                    entry_type_id,
+                    entry_datetime,
                     created,
                     family_member_id,
                     amount,
@@ -55,14 +74,18 @@ def create():
             db.commit()
             return redirect(url_for("journal.index"))
 
-    return render_template("journal/create.html")
+    # Get entry types for the creation form
+    db = get_db()
+    entry_types = db.execute("SELECT * FROM entry_type").fetchall()
+
+    return render_template("journal/create.html", entry_types=entry_types)
 
 
 def get_log_entry(id, check_author=True):
     log_entry = (
         get_db()
         .execute(
-            "SELECT e.id, u.username, e.entry_type, e.family_member_id, e.amount, e.comments, e.author_id"
+            "SELECT e.id, u.username, e.entry_type_id, e.event_time, e.family_member_id, e.amount, e.comments, e.author_id"
             " FROM log_entry e JOIN user u ON e.author_id = u.id"
             " WHERE e.id = ?",
             (id,),
@@ -85,13 +108,17 @@ def update(id):
     log_entry = get_log_entry(id)
 
     if request.method == "POST":
-        entry_type = request.form["entry_type"]
+        entry_type_id = request.form["entry_type_id"]
+        event_time = request.form["event_time"]
         family_member_id = request.form["family_member_id"]
         amount = request.form["amount"]
         comments = request.form["comments"]
         error = None
 
-        if not entry_type:
+        # Convert event_time to a datetime object for storage in the database
+        entry_datetime = datetime.strptime(event_time, "%H:%M")
+
+        if not entry_type_id:
             error = "Entry type is required."
 
         if error is not None:
@@ -99,10 +126,11 @@ def update(id):
         else:
             db = get_db()
             db.execute(
-                "UPDATE log_entry SET entry_type = ?, family_member_id = ?, amount = ?, comments = ?"
+                "UPDATE log_entry SET entry_type_id = ?, event_time = ?, family_member_id = ?, amount = ?, comments = ?"
                 " WHERE id = ?",
                 (
-                    entry_type,
+                    entry_type_id,
+                    entry_datetime,
                     family_member_id,
                     amount,
                     comments,
@@ -112,7 +140,11 @@ def update(id):
             db.commit()
             return redirect(url_for("journal.index"))
 
-    return render_template("journal/update.html", log_entry=log_entry)
+    db = get_db()
+    entry_types = db.execute("SELECT * FROM entry_type").fetchall()
+    return render_template(
+        "journal/update.html", log_entry=log_entry, entry_types=entry_types
+    )
 
 
 @bp.route("/<int:id>/delete", methods=("POST",))
