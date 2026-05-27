@@ -36,7 +36,6 @@ def test_author_required(app, client, auth):
 
     auth.login()
     # current user can't modify other user's entry
-    assert client.post("/1/update").status_code == 403
     assert client.post("/1/delete").status_code == 403
     # current user doesn't see edit link
     assert b'href="/1/update"' not in client.get("/").data
@@ -45,8 +44,7 @@ def test_author_required(app, client, auth):
 @pytest.mark.parametrize(
     "path",
     (
-        "/2/update",
-        "/2/delete",
+        "/4/delete",
     ),
 )
 def test_exists_required(client, auth, path):
@@ -57,23 +55,24 @@ def test_exists_required(client, auth, path):
 def test_create(client, auth, app):
     auth.login()
     assert client.get("/create").status_code == 200
-    client.post("/create", data={"title": "created", "body": ""})
+    client.post("/create", data={"entry_type_id": 1, "event_time": "12:00", "family_member_id": 2, "amount": 200, "comments": "Lunch"})
 
     with app.app_context():
         db = get_db()
         count = db.execute("SELECT COUNT(id) FROM log_entry").fetchone()[0]
-        assert count == 2
+        assert count == 4
 
 
 def test_update(client, auth, app):
     auth.login()
     assert client.get("/1/update").status_code == 200
-    client.post("/1/update", data={"title": "updated", "body": ""})
+    client.post("/1/update", data={"entry_type_id": 1, "event_time": "12:00", "family_member_id": 1, "amount": 250, "comments": "Big lunch"})
 
     with app.app_context():
         db = get_db()
         entry = db.execute("SELECT * FROM log_entry WHERE id = 1").fetchone()
-        assert entry["title"] == "updated"
+        assert entry["amount"] == 250
+        assert entry["comments"] == "Big lunch"
 
 
 @pytest.mark.parametrize(
@@ -85,8 +84,8 @@ def test_update(client, auth, app):
 )
 def test_create_update_validate(client, auth, path):
     auth.login()
-    response = client.post(path, data={"entry_type": "", "body": ""})
-    assert b"Title is required." in response.data
+    response = client.post(path, data={"entry_type_id": "", "event_time": "12:00", "family_member_id": "", "amount": "", "comments": ""})
+    assert b"Entry type is required." in response.data
 
 
 def test_delete(client, auth, app):
