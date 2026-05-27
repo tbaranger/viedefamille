@@ -105,7 +105,6 @@ def get_log_entry(id, check_author=True):
 @bp.route("/<int:id>/update", methods=("GET", "POST"))
 @login_required
 def update(id):
-    log_entry = get_log_entry(id)
 
     if request.method == "POST":
         entry_type_id = request.form["entry_type_id"]
@@ -139,6 +138,8 @@ def update(id):
             )
             db.commit()
             return redirect(url_for("journal.index"))
+
+    log_entry = get_log_entry(id)
 
     db = get_db()
     entry_types = db.execute("SELECT * FROM entry_type").fetchall()
